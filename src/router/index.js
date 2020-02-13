@@ -1,29 +1,112 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import store from '@/store/';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
-const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
-]
-
+/*
+  meta
+	-
+*/
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
-})
+	mode: 'history',
+	base: process.env.BASE_URL,
+	routes: [
+		//main layout
+		{
+			path: '/',
+			component: () => import('@/views/MainLayout'),
+			children: [
+				{
+					name: 'Dashboard',
+					path: '/',
+					component: () => import('@/views/main/Dashboard'),
+					meta: {
+						requiresAuth: true,
+						requiresInititate: true,
+					},
+				},
+				{
+					path: '/domain',
+					component: () => import('@/views/domain/Layout'),
+					children: [
+						{
+							name: 'DomainAdd',
+							path: 'add',
+							component: () => import('@/views/domain/Add'),
+							meta: {
+								requiresAuth: true,
+								requiresInititate: true,
+							},
+						},
 
-export default router
+						{
+							name: 'DomainView',
+							path: 'id/:id',
+							component: () => import('@/views/domain/View'),
+							meta: {
+								requiresAuth: true,
+								requiresInititate: true,
+							},
+						},
+					],
+				},
+			],
+		},
+
+		//empty layout
+		{
+			path: '/util',
+			component: () => import('@/views/EmptyLayout'),
+			children: [
+				{
+					name: 'Login',
+					path: 'login',
+					component: () => import('@/views/empty/Login'),
+					meta: {
+						requiresInititate: true,
+						requiresNotAuth: true,
+					},
+				},
+				{
+					name: 'Setup',
+					path: 'setup',
+					component: () => import('@/views/empty/Setup'),
+					meta: {
+						requiresNotInititate: true,
+					},
+				},
+			],
+		},
+		{
+			path: '*',
+			component: () => import('@/views/EmptyLayout'),
+			children: [
+				{
+					path: '',
+					component: () => import('@/views/empty/Error'),
+				},
+			],
+		},
+	],
+});
+
+router.beforeEach((to, from, next) => {
+	if (to.meta.requiresAuth) console.log('requiresAuth', to.fullPath, 'loggedIn: ' + store.state.ACCESS_TOKEN);
+	if (to.meta.requiresInititate)
+		console.log('requiresInititate', to.fullPath, 'appInitiated: ' + store.state.APP_INITIATED);
+	if (to.meta.requiresNotAuth) console.log('requiresNotAuth', to.fullPath, 'loggedIn: ' + store.state.ACCESS_TOKEN);
+	if (to.meta.requiresNotInititate)
+		console.log('requiresNotInititate', to.fullPath, 'appInitiated: ' + store.state.APP_INITIATED);
+
+	if (to.meta.requiresAuth && store.state.ACCESS_TOKEN == false) router.push('/util/login');
+	if (to.meta.requiresInititate && store.state.APP_INITIATED == false) next({ path: '/util/setup' });
+
+	if (to.meta.requiresNotInititate && store.state.APP_INITIATED == true) router.push('/util/login');
+	if (to.meta.requiresNotAuth && store.state.ACCESS_TOKEN != false) next({ path: '/' });
+
+	console.log('nothing');
+	next();
+});
+
+export default router;
