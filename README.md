@@ -13,7 +13,7 @@ This app helps to setup your mini CDN. Add domains, setup settings and view your
 
 [granny-server-backend](https://github.com/mrspartak/granny-server-backend "granny-server-backend") - Backend service with API exposed to upload and serve/manipulate images  
 [granny-js-client](https://github.com/mrspartak/granny-js-client "granny-js-client") - Client library that works both in nodejs and browser. Makes API calls easier  
-[granny-server-frontend](https://hub.docker.com/repository/docker/assorium/granny-server-web "granny-server-frontend") - Frontend APP that uses client to manage your CDN domains and settings  
+[granny-server-frontend](https://github.com/mrspartak/granny-server-frontend "granny-server-frontend") - Frontend APP that uses client to manage your CDN domains and settings  
 
 ## Requirements
 - [Granny backend server running](https://github.com/mrspartak/granny-server-backend)
