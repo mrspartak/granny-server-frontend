@@ -42,8 +42,18 @@ const router = new VueRouter({
 
 						{
 							name: 'DomainView',
-							path: 'id/:id',
+							path: 'view/:id',
 							component: () => import('@/views/domain/View'),
+							meta: {
+								requiresAuth: true,
+								requiresInititate: true,
+							},
+						},
+
+						{
+							name: 'DomainContent',
+							path: 'content/:id',
+							component: () => import('@/views/domain/Content'),
 							meta: {
 								requiresAuth: true,
 								requiresInititate: true,

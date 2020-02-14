@@ -13,6 +13,7 @@
 				</b-link>
 			</li>
 		</ul>
+
 		<ul class="list-unstyled components">
 			<li>
 				<b-link :to="{ name: 'DomainAdd' }">
@@ -33,12 +34,17 @@
 				</b-link>
 			</li>
 		</ul>
+
+		<ul class="list-unstyled components">
+			<li>
+				<b-link @click.prevent="logout()"> <b-icon-box-arrow-right></b-icon-box-arrow-right> Logout </b-link>
+			</li>
+		</ul>
 	</nav>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import { mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 export default {
 	name: 'MainDrawer',
@@ -48,6 +54,11 @@ export default {
 	},
 	methods: {
 		...mapActions(['GET_DOMAIN_LIST']),
+		...mapMutations(['SET_APP_ACCESS_TOKEN']),
+		logout() {
+			this.SET_APP_ACCESS_TOKEN('');
+			this.$router.push({ name: 'Login' });
+		},
 	},
 };
 </script>

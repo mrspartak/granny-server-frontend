@@ -5,20 +5,6 @@
 			<Drawer />
 
 			<div id="content">
-				<nav class="navbar navbar-expand-lg navbar-light bg-light">
-					<div class="container-fluid">
-						<div class="collapse navbar-collapse" id="navbarSupportedContent">
-							<ul class="nav navbar-nav ml-auto">
-								<li class="nav-item active">
-									<b-nav-item @click.prevent="logout()">
-										<b-icon-box-arrow-right></b-icon-box-arrow-right> Logout
-									</b-nav-item>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</nav>
-
 				<transition name="fade" mode="out-in"><router-view></router-view></transition>
 			</div>
 		</div>
@@ -28,17 +14,9 @@
 <script>
 import Header from './main/components/Header';
 import Drawer from './main/components/Drawer';
-import { mapMutations } from 'vuex';
 
 export default {
 	name: 'MainLayout',
-	methods: {
-		...mapMutations(['SET_APP_ACCESS_TOKEN']),
-		logout() {
-			this.SET_APP_ACCESS_TOKEN('');
-			this.$router.push({ name: 'Login' });
-		},
-	},
 	components: { Header, Drawer },
 };
 </script>
