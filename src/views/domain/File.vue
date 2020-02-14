@@ -35,12 +35,14 @@
 
 		<div>
 			<h5>
-				Orinal image: <small>{{ originalSrc }}</small>
+				Orinal image: <small>{{ originalSrc }}</small> 
+				<b-link :href="originalSrc" target="_blank"><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right></b-link>
 			</h5>
 			<b-img fluid :src="originalSrc"></b-img>
 
 			<h5 class="mt-5">
 				Modified image: <small>{{ modifiedSrc }}</small>
+				<b-link :href="modifiedSrc" target="_blank"><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right></b-link>
 			</h5>
 			<b-form>
 				<b-form-group label="Width">
