@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h3>
+		<h3 class="mb-4">
 			Domain: {{ domain.domain }}
 
 			<b-button variant="outline-primary" :to="{ name: 'DomainView', id: domain.domain }">View info</b-button>
@@ -29,7 +29,37 @@
 			</b-breadcrumb-item>
 		</b-breadcrumb>
 
-		<b-table :striped="true" :borderless="true" :fields="fields" :busy="isBusy" :items="items">
+		<b-form class="mt-4">
+			<b-row>
+				<b-col>
+					<label>Select path for file</label>
+					<b-input-group>
+						<b-input v-model="form.path"></b-input>
+						<b-input-group-append>
+							<b-button
+								variant="outline-secondary"
+								@click="form.path = '/' + (getPath() ? getPath() + '/' : '') + 'space.jpg'"
+								>Set current path</b-button
+							>
+						</b-input-group-append>
+					</b-input-group>
+				</b-col>
+
+				<b-col>
+					<label>Image to upload</label>
+					<b-form-file v-model="form.file" accept="image/*"></b-form-file>
+				</b-col>
+
+				<b-col columns="3">
+					<label></label><br />
+					<b-button class="mt-2" type="submit" variant="outline-primary" @click.prevent="uploadImage()"
+						>Upload</b-button
+					>
+				</b-col>
+			</b-row>
+		</b-form>
+
+		<b-table class="mt-4" :striped="true" :borderless="true" :fields="fields" :busy="isBusy" :items="items">
 			<template v-slot:table-busy>
 				<div class="text-center text-danger my-2">
 					<b-spinner class="align-middle"></b-spinner>
@@ -50,7 +80,15 @@
 					</b-link>
 				</div>
 				<div v-else>
-					{{ data.item.path }}
+					<b-link
+						:to="{
+							name: 'DomainFile',
+							params: { id: $route.params.id },
+							query: { path: getPath() + '/' + data.item.path },
+						}"
+					>
+						<b-icon-image scale="1.5" class="mr-1"></b-icon-image> {{ data.item.path }}
+					</b-link>
 				</div>
 			</template>
 
@@ -68,6 +106,11 @@ export default {
 	name: 'DomainView',
 	data() {
 		return {
+			form: {
+				isBusy: false,
+				path: this.getPath(),
+				file: null,
+			},
 			items: [],
 			isBusy: true,
 			fields: ['name', 'files_inside'],
@@ -122,7 +165,6 @@ export default {
 			var [err, content] = await this.$granny.listDirectory({
 				path: this.getPath(),
 			});
-			console.log(err, content);
 
 			let folders = [],
 				files = [];
@@ -134,6 +176,46 @@ export default {
 			this.isBusy = false;
 			this.items = [...folders, ...files];
 		},
+
+		async uploadImage() {
+			this.form.isBusy = true;
+
+			if (!this.form.path) {
+				this.form.isBusy = false;
+				return this.$bvToast.toast('Path must be specified', {
+					title: 'Error',
+					variant: 'danger',
+				});
+			}
+
+			if (!this.form.file) {
+				this.form.isBusy = false;
+				return this.$bvToast.toast('Image must be provided', {
+					title: 'Error',
+					variant: 'danger',
+				});
+			}
+
+			var [err, result] = await this.$granny.uploadImage({ path: this.form.path, image: this.form.file });
+			if (err) {
+				this.form.isBusy = false;
+				return this.$bvToast.toast(err.message, {
+					title: 'Error',
+					variant: 'danger',
+				});
+			}
+
+			this.$bvToast.toast('Image uploaded!', {
+				title: 'Success',
+				variant: 'success',
+			});
+			this.$router.push({
+				name: 'DomainFile',
+				params: { id: this.domain.domain },
+				query: { path: result.imagePath },
+			});
+		},
+
 		setupAPI() {
 			this.$granny.setOptions({
 				accessKey: this.domain.accessKey,

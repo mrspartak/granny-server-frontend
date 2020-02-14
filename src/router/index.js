@@ -59,6 +59,16 @@ const router = new VueRouter({
 								requiresInititate: true,
 							},
 						},
+
+						{
+							name: 'DomainFile',
+							path: 'file/:id',
+							component: () => import('@/views/domain/File'),
+							meta: {
+								requiresAuth: true,
+								requiresInititate: true,
+							},
+						},
 					],
 				},
 			],
