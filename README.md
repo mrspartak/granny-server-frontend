@@ -45,4 +45,7 @@ Adding domain
 ![image](https://user-images.githubusercontent.com/993910/74448612-4f3ce400-4e8c-11ea-8e87-72fdc899f513.png)
 
 Listing files
-![image](https://user-images.githubusercontent.com/993910/74448675-6aa7ef00-4e8c-11ea-8e2f-5c021c8f545f.png)
+![image](https://user-images.githubusercontent.com/993910/74565122-8fca5980-4f81-11ea-936a-9b5523c2bdac.png)
+
+Viewing and manipulating file
+![image](https://user-images.githubusercontent.com/993910/74565082-75907b80-4f81-11ea-96e4-e036d1cf9ecb.png)
