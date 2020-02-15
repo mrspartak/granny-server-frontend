@@ -37,7 +37,7 @@
 			<b-col xs="12" sm="12" lg="6" class="mb-5">
 				<h5>
 					Orinal image: <small>{{ originalSrc }}</small>
-					<b-link :href="originalSrc" target="_blank"
+					<b-link :href="'//' + originalSrc" target="_blank"
 						><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right
 					></b-link>
 				</h5>
@@ -50,13 +50,13 @@
 				</h5>
 				<p>
 					<b>Long syntax:</b> {{ modifiedSrc }}
-					<b-link :href="modifiedSrc" target="_blank"
+					<b-link :href="'//' + modifiedSrc" target="_blank"
 						><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right
 					></b-link>
 				</p>
 				<p>
 					<b>Short syntax:</b> {{ modifiedShortSrc }}
-					<b-link :href="modifiedShortSrc" target="_blank"
+					<b-link :href="'//' + modifiedShortSrc" target="_blank"
 						><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right
 					></b-link>
 				</p>
