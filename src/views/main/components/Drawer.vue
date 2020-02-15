@@ -22,15 +22,9 @@
 				</b-link>
 			</li>
 			<li>
-				<b-link @click="GET_DOMAIN_LIST">
-					<b-icon-arrow-repeat></b-icon-arrow-repeat>
-					Reload domains
-				</b-link>
-			</li>
-			<li v-for="domain in domains">
-				<b-link :to="{ name: 'DomainView', params: { id: domain.domain } }">
-					<b-icon-blank></b-icon-blank>
-					{{ domain.domain }}
+				<b-link :to="{ name: 'DomainList' }">
+					<b-icon-list></b-icon-list>
+					List domains
 				</b-link>
 			</li>
 		</ul>
@@ -69,7 +63,6 @@ export default {
 		...mapState(['users']),
 	},
 	methods: {
-		...mapActions(['GET_DOMAIN_LIST']),
 		...mapMutations(['SET_APP_ACCESS_TOKEN']),
 		logout() {
 			this.SET_APP_ACCESS_TOKEN('');

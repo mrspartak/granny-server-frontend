@@ -31,6 +31,16 @@ const router = new VueRouter({
 					component: () => import('@/views/domain/Layout'),
 					children: [
 						{
+							name: 'DomainList',
+							path: 'list',
+							component: () => import('@/views/domain/List'),
+							meta: {
+								requiresAuth: true,
+								requiresInititate: true,
+							},
+						},
+
+						{
 							name: 'DomainAdd',
 							path: 'add',
 							component: () => import('@/views/domain/Add'),

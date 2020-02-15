@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
 	name: 'UserView',
@@ -44,9 +44,14 @@ export default {
 			fields: ['login', 'role', 'domains', 'actions'],
 		};
 	},
+	async mounted() {
+		await this.GET_USER_LIST();
+	},
 	computed: {
 		...mapState(['users']),
 	},
-	methods: {},
+	methods: {
+		...mapActions(['GET_USER_LIST']),
+	},
 };
 </script>

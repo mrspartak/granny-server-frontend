@@ -1,12 +1,14 @@
 <template>
 	<div>
-		<h3 class="mb-4">
-			Domain: {{ domain.domain }}
-
-			<b-button variant="outline-primary" :to="{ name: 'DomainView', id: domain.domain }">View info</b-button>
-		</h3>
-
 		<b-breadcrumb>
+			<b-breadcrumb-item
+				:to="{
+					name: 'DomainList',
+				}"
+			>
+				Domains
+			</b-breadcrumb-item>
+
 			<b-breadcrumb-item
 				:to="{
 					name: 'DomainContent',
@@ -32,6 +34,12 @@
 				<b>{{ fileName }}</b>
 			</b-breadcrumb-item>
 		</b-breadcrumb>
+
+		<h3 class="mb-4">
+			Domain: {{ domain.domain }}
+
+			<b-button variant="outline-primary" :to="{ name: 'DomainView', id: domain.domain }">View info</b-button>
+		</h3>
 
 		<b-row>
 			<b-col xs="12" sm="12" lg="6" class="mb-5">

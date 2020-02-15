@@ -1,5 +1,19 @@
 <template>
 	<div>
+		<b-breadcrumb>
+			<b-breadcrumb-item
+				:to="{
+					name: 'DomainList',
+				}"
+			>
+				Domains
+			</b-breadcrumb-item>
+
+			<b-breadcrumb-item>
+				{{ domain.domain }}
+			</b-breadcrumb-item>
+		</b-breadcrumb>
+
 		<h3>
 			Domain: {{ domain.domain }}
 
@@ -35,36 +49,81 @@
 		</b-row>
 
 		<h4 class="mt-5">Settings</h4>
+		<b-row>
+			<b-col lg="4" sm="6" xs="12">
+				<b-form-group label="Referers. String of RegExp string for any string matching">
+					<b-form-tags v-model="form.referer" class="mb-2"></b-form-tags>
+					<b-button size="sm" variant="outline-secondary" class="mr-2" @click="form.referer = ['*']"
+						>Allow all referals</b-button
+					>
+					<b-button size="sm" variant="outline-secondary" @click="form.referer.push('__allow_direct__')"
+						>Allow direct access</b-button
+					>
+				</b-form-group>
+			</b-col>
+
+			<b-col xl="3" lg="4" sm="6" xs="12">
+				<b-form-group label="Time to cache modified in hours. 0 = forever">
+					<b-form-input v-model="form.ttl" type="number" min="0" number></b-form-input>
+				</b-form-group>
+			</b-col>
+
+			<b-col xs="12" xl="12" v-if="users.length">
+				<b-form-group label="Users []">
+					<b-form-select v-model="form.users" :multiple="true" :select-size="10">
+						<b-form-select-option v-for="user in users" :value="user._id">{{
+							user.login
+						}}</b-form-select-option>
+					</b-form-select>
+				</b-form-group>
+			</b-col>
+
+			<b-col xs="12" xl="12">
+				<b-button type="submit" variant="primary" @click.prevent="editItem()">Save</b-button>
+			</b-col>
+		</b-row>
 	</div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
 	name: 'DomainView',
 	data() {
 		return {
 			showKeys: false,
+			form: {
+				users: [],
+				referer: [],
+				ttl: null,
+			},
+			_form: {},
 		};
 	},
 	beforeMount() {
 		this.setupAPI();
 	},
+	mounted() {
+		this._form = Object.assign({}, this.form);
+		this.resetForm();
+	},
 	watch: {
 		'$route.params.id'() {
-			console.log('watch.params.id');
 			this.setupAPI();
 		},
 	},
 	computed: {
 		...mapState(['domains']),
+		...mapState(['users']),
 
 		domain: function() {
 			return this.domains.find(domain => domain.domain == this.$route.params.id);
 		},
 	},
 	methods: {
+		...mapActions(['GET_DOMAIN_LIST']),
+
 		setupAPI() {
 			this.$granny.setOptions({
 				accessKey: this.domain.accessKey,
@@ -72,11 +131,44 @@ export default {
 			});
 		},
 
+		async editItem() {
+			var [err, result] = await this.$granny.editDomain(
+				Object.assign(
+					{
+						domain: this.domain.domain,
+					},
+					this.form,
+				),
+			);
+
+			if (err)
+				return this.$bvToast.toast(err.message, {
+					title: 'Error',
+					variant: 'danger',
+				});
+
+			this.$bvToast.toast('Domain edited', {
+				title: 'Success',
+				variant: 'success',
+			});
+
+			await this.GET_DOMAIN_LIST();
+			this.resetForm();
+		},
+
 		regenerateKeys() {
 			if (!confirm('Are you sure you want to regenerate keys?')) return;
 
 			alert('Currently this is in development');
 			//todo
+		},
+
+		resetForm() {
+			this.form = Object.assign(this._form, {
+				users: this.domain.users,
+				referer: this.domain.settings.referer,
+				ttl: this.domain.settings.ttl,
+			});
 		},
 	},
 };
