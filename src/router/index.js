@@ -71,6 +71,42 @@ const router = new VueRouter({
 						},
 					],
 				},
+
+				{
+					path: '/user',
+					component: () => import('@/views/user/Layout'),
+					children: [
+						{
+							name: 'UserList',
+							path: 'list',
+							component: () => import('@/views/user/List'),
+							meta: {
+								requiresAuth: true,
+								requiresInititate: true,
+							},
+						},
+
+						{
+							name: 'UserAdd',
+							path: 'add',
+							component: () => import('@/views/user/Add'),
+							meta: {
+								requiresAuth: true,
+								requiresInititate: true,
+							},
+						},
+
+						{
+							name: 'UserView',
+							path: 'view/:id',
+							component: () => import('@/views/user/View'),
+							meta: {
+								requiresAuth: true,
+								requiresInititate: true,
+							},
+						},
+					],
+				},
 			],
 		},
 

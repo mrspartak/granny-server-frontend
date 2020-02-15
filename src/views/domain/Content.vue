@@ -35,13 +35,6 @@
 					<label>Select path for file</label>
 					<b-input-group>
 						<b-input v-model="form.path"></b-input>
-						<b-input-group-append>
-							<b-button
-								variant="outline-secondary"
-								@click="form.path = '/' + (getPath() ? getPath() + '/' : '') + 'space.jpg'"
-								>Set current path</b-button
-							>
-						</b-input-group-append>
 					</b-input-group>
 				</b-col>
 
@@ -121,16 +114,19 @@ export default {
 	},
 	mounted() {
 		this.getDirectoryContent();
+		this.form.path = '/' + (this.getPath() ? this.getPath() + '/' : '') + 'space.jpg';
 	},
 	watch: {
 		'$route.query.path'() {
 			console.log('watch.query.path');
 			this.getDirectoryContent();
+			this.form.path = '/' + (this.getPath() ? this.getPath() + '/' : '') + 'space.jpg';
 		},
 		'$route.params.id'() {
 			console.log('watch.params.id');
 			this.setupAPI();
 			this.getDirectoryContent();
+			this.form.path = '/' + (this.getPath() ? this.getPath() + '/' : '') + 'space.jpg';
 		},
 	},
 	computed: {

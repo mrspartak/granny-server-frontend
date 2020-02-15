@@ -35,6 +35,21 @@
 			</li>
 		</ul>
 
+		<ul class="list-unstyled components" v-if="users.length">
+			<li>
+				<b-link :to="{ name: 'UserAdd' }">
+					<b-icon-plus></b-icon-plus>
+					Add user
+				</b-link>
+			</li>
+			<li>
+				<b-link :to="{ name: 'UserList' }">
+					<b-icon-list></b-icon-list>
+					List users
+				</b-link>
+			</li>
+		</ul>
+
 		<ul class="list-unstyled components">
 			<li>
 				<b-link @click.prevent="logout()"> <b-icon-box-arrow-right></b-icon-box-arrow-right> Logout </b-link>
@@ -51,6 +66,7 @@ export default {
 
 	computed: {
 		...mapState(['domains']),
+		...mapState(['users']),
 	},
 	methods: {
 		...mapActions(['GET_DOMAIN_LIST']),

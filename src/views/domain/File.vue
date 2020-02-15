@@ -33,44 +33,73 @@
 			</b-breadcrumb-item>
 		</b-breadcrumb>
 
-		<div>
-			<h5>
-				Orinal image: <small>{{ originalSrc }}</small> 
-				<b-link :href="originalSrc" target="_blank"><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right></b-link>
-			</h5>
-			<b-img fluid :src="originalSrc"></b-img>
+		<b-row>
+			<b-col xs="12" sm="12" lg="6" class="mb-5">
+				<h5>
+					Orinal image: <small>{{ originalSrc }}</small>
+					<b-link :href="originalSrc" target="_blank"
+						><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right
+					></b-link>
+				</h5>
+				<b-img fluid :src="'//' + originalSrc"></b-img>
+			</b-col>
 
-			<h5 class="mt-5">
-				Modified image: <small>{{ modifiedSrc }}</small>
-				<b-link :href="modifiedSrc" target="_blank"><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right></b-link>
-			</h5>
-			<b-form>
-				<b-form-group label="Width">
-					<b-form-input v-model="modifications.width" trim></b-form-input>
-				</b-form-group>
+			<b-col xs="12" sm="12" lg="6">
+				<h5>
+					Modified image
+				</h5>
+				<p>
+					<b>Long syntax:</b> {{ modifiedSrc }}
+					<b-link :href="modifiedSrc" target="_blank"
+						><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right
+					></b-link>
+				</p>
+				<p>
+					<b>Short syntax:</b> {{ modifiedShortSrc }}
+					<b-link :href="modifiedShortSrc" target="_blank"
+						><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right
+					></b-link>
+				</p>
+				<b-row>
+					<b-col xl="4" lg="6" xs="12">
+						<b-form-group label="Width">
+							<b-form-input v-model="modifications.width" trim></b-form-input>
+						</b-form-group>
+					</b-col>
 
-				<b-form-group label="Height">
-					<b-form-input v-model="modifications.height" trim></b-form-input>
-				</b-form-group>
+					<b-col xl="4" lg="6" xs="12">
+						<b-form-group label="Height">
+							<b-form-input v-model="modifications.height" trim></b-form-input>
+						</b-form-group>
+					</b-col>
 
-				<b-form-group label="Quality [1-100]">
-					<b-form-input v-model="modifications.quality" trim></b-form-input>
-				</b-form-group>
+					<b-col xl="4" lg="6" xs="12">
+						<b-form-group label="Quality [1-100]">
+							<b-form-input v-model="modifications.quality" trim></b-form-input>
+						</b-form-group>
+					</b-col>
 
-				<b-form-group label="Blur [1-1000]">
-					<b-form-input v-model="modifications.blur" trim></b-form-input>
-				</b-form-group>
+					<b-col xl="4" lg="6" xs="12">
+						<b-form-group label="Blur [1-1000]">
+							<b-form-input v-model="modifications.blur" trim></b-form-input>
+						</b-form-group>
+					</b-col>
 
-				<b-form-group label="Format">
-					<b-form-select v-model="modifications.format" :options="formatTypes"></b-form-select>
-				</b-form-group>
+					<b-col xl="4" lg="6" xs="12">
+						<b-form-group label="Format">
+							<b-form-select v-model="modifications.format" :options="formatTypes"></b-form-select>
+						</b-form-group>
+					</b-col>
 
-				<b-button type="submit" variant="primary" @click.prevent="modifiedSrcApplied = modifiedSrc"
-					>Show modified image</b-button
-				>
-			</b-form>
-			<b-img class="mt-2" fluid v-if="modifiedSrcApplied" :src="modifiedSrcApplied"></b-img>
-		</div>
+					<b-col xs="12" xl="12">
+						<b-button type="submit" variant="primary" @click.prevent="modifiedSrcApplied = modifiedSrc"
+							>Show modified image</b-button
+						>
+					</b-col>
+				</b-row>
+				<b-img class="mt-2" fluid v-if="modifiedSrcApplied" :src="'//' + modifiedSrcApplied"></b-img>
+			</b-col>
+		</b-row>
 	</div>
 </template>
 
@@ -117,7 +146,7 @@ export default {
 		originalSrc: function() {
 			let port = process.env.NODE_ENV == 'development' ? ':3001' : '';
 
-			return '//' + this.domain.domain + port + '/i/' + this.getPath();
+			return this.domain.domain + port + '/i/' + this.getPath();
 		},
 
 		modifiedSrc: function() {
@@ -129,7 +158,36 @@ export default {
 			});
 			let modPath = modPathArray.length ? modPathArray.join(',') : '';
 
-			return '//' + this.domain.domain + port + '/i/' + (modPath ? modPath + '/_/' : '') + this.getPath();
+			return this.domain.domain + port + '/i/' + (modPath ? modPath + '/_/' : '') + this.getPath();
+		},
+
+		modifiedShortSrc: function() {
+			let port = process.env.NODE_ENV == 'development' ? ':3001' : '';
+
+			let modPathArray = [];
+			if (this.modifications.width || this.modifications.height) {
+				if (this.modifications.width != this.modifications.height)
+					modPathArray.push(
+						`r=${this.modifications.width ? this.modifications.width : ''}x${
+							this.modifications.height ? this.modifications.height : ''
+						}`,
+					);
+				else modPathArray.push(`r=${this.modifications.width}`);
+			}
+			Object.keys(this.modifications).forEach(key => {
+				if (this.modifications[key]) {
+					let altKey = key;
+					if (key == 'width') return;
+					if (key == 'height') return;
+					if (key == 'format') altKey = 'f';
+					if (key == 'quality') altKey = 'q';
+
+					modPathArray.push(`${altKey}=${this.modifications[key]}`);
+				}
+			});
+			let modPath = modPathArray.length ? modPathArray.join(',') : '';
+
+			return this.domain.domain + port + '/i/' + (modPath ? modPath + '/_/' : '') + this.getPath();
 		},
 
 		pathSplited: function() {

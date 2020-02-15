@@ -9,4 +9,7 @@ export default {
 	SET_DOMAINS: (state, payload = []) => {
 		state.domains = payload;
 	},
+	SET_USERS: (state, payload = []) => {
+		state.users = payload;
+	},
 };

@@ -3,4 +3,5 @@ export default {
 	ACCESS_TOKEN: false,
 
 	domains: [],
+	users: [],
 };
