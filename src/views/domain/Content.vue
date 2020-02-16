@@ -34,7 +34,9 @@
 		<h3 class="mb-4">
 			Domain: {{ domain.domain }}
 
-			<b-button variant="outline-primary" :to="{ name: 'DomainView', id: domain.domain }">View info</b-button>
+			<b-button size="sm" variant="outline-primary" :to="{ name: 'DomainView', id: domain.domain }"
+				>View info</b-button
+			>
 		</h3>
 
 		<b-form class="mt-4">
@@ -60,64 +62,96 @@
 			</b-row>
 		</b-form>
 
-		<b-table
-			class="mt-4"
-			:striped="true"
-			:borderless="true"
-			:fields="fields"
-			:busy="isBusy"
-			:items="items"
-			show-empty
-			empty-text="No content uploaded yet"
-		>
-			<template v-slot:table-busy>
-				<div class="text-center text-danger my-2">
-					<b-spinner class="align-middle"></b-spinner>
-					<strong>Loading...</strong>
-				</div>
-			</template>
+		<b-table-simple class="mt-4" small responsive striped borderless>
+			<b-thead>
+				<b-tr>
+					<b-th>Name</b-th>
+					<b-th class="text-right">Size Original</b-th>
+					<b-th class="text-right">Size Total</b-th>
+					<b-th class="text-right">Files Inside</b-th>
+					<b-th class="text-center">Actions</b-th>
+				</b-tr>
+			</b-thead>
+			<b-tbody>
+				<b-tr v-for="item in items">
+					<b-td>
+						<div v-if="item.type == 'folder'">
+							<b-link
+								:to="{
+									name: 'DomainContent',
+									params: { id: $route.params.id },
+									query: { path: getPath() + '/' + item.path },
+								}"
+							>
+								<b><b-icon-folder scale="1.5" class="mr-1"></b-icon-folder> {{ item.path }}</b>
+							</b-link>
+						</div>
+						<div v-else>
+							<b-link
+								:to="{
+									name: 'DomainFile',
+									params: { id: $route.params.id },
+									query: { path: getPath() + '/' + item.path },
+								}"
+							>
+								<b-icon-image scale="1.5" class="mr-1"></b-icon-image> {{ item.path }}
+							</b-link>
+						</div>
+					</b-td>
 
-			<template v-slot:cell(name)="data">
-				<div v-if="data.item.type == 'folder'">
-					<b-link
-						:to="{
-							name: 'DomainContent',
-							params: { id: $route.params.id },
-							query: { path: getPath() + '/' + data.item.path },
-						}"
-					>
-						<b><b-icon-folder scale="1.5" class="mr-1"></b-icon-folder> {{ data.item.path }}</b>
-					</b-link>
-				</div>
-				<div v-else>
-					<b-link
-						:to="{
-							name: 'DomainFile',
-							params: { id: $route.params.id },
-							query: { path: getPath() + '/' + data.item.path },
-						}"
-					>
-						<b-icon-image scale="1.5" class="mr-1"></b-icon-image> {{ data.item.path }}
-					</b-link>
-				</div>
-			</template>
+					<b-td class="text-right">{{ formatBytes(item.size.original) }}</b-td>
+					<b-td class="text-right">
+						{{
+							formatBytes(
+								Object.values(item.size).reduce(
+									(accumulator, currentValue) => accumulator + currentValue,
+								),
+							)
+						}}
+					</b-td>
 
-			<template v-slot:cell(size_original)="data">
-				{{ formatBytes(data.item.size.original) }}
-			</template>
+					<b-td class="text-right">{{ item.items }}</b-td>
 
-			<template v-slot:cell(size_total)="data">
-				{{
-					formatBytes(
-						Object.values(data.item.size).reduce((accumulator, currentValue) => accumulator + currentValue),
-					)
-				}}
-			</template>
-
-			<template v-slot:cell(files_inside)="data">
-				{{ data.item.items }}
-			</template>
-		</b-table>
+					<b-td class="text-center">
+						<b-button
+							v-if="item.type == 'file'"
+							size="sm"
+							variant="outline-danger"
+							@click="deleteImage(getPath() + '/' + item.path)"
+						>
+							Delete
+						</b-button>
+					</b-td>
+				</b-tr>
+			</b-tbody>
+			<b-tfoot>
+				<b-tr>
+					<b-th colspan="2" variant="secondary" class="text-right" v-if="items">
+						{{
+							formatBytes(
+								items.reduce(
+									(accumulator, currentValue) => accumulator + currentValue.size.original,
+									0,
+								),
+							)
+						}}
+					</b-th>
+					<b-th variant="secondary" class="text-right">
+						{{
+							formatBytes(
+								items.reduce((accumulator, currentValue) => {
+									return (
+										accumulator +
+										Object.values(currentValue.size).reduce((acc, curr) => acc + curr, 0)
+									);
+								}, 0),
+							)
+						}}
+					</b-th>
+					<b-th colspan="2" variant="secondary" class="text-right"></b-th>
+				</b-tr>
+			</b-tfoot>
+		</b-table-simple>
 	</div>
 </template>
 
@@ -135,7 +169,7 @@ export default {
 			},
 			items: [],
 			isBusy: true,
-			fields: ['name', 'size_original', 'size_total', 'files_inside'],
+			fields: ['name', 'size_original', 'size_total', 'files_inside', 'actions'],
 		};
 	},
 	beforeMount() {
@@ -242,6 +276,24 @@ export default {
 				params: { id: this.domain.domain },
 				query: { path: result.imagePath },
 			});
+		},
+
+		async deleteImage(path) {
+			if (!confirm('Are you sure you want to delete ' + path + '?')) return false;
+
+			var [err, deleted] = await this.$granny.deleteImage({ path });
+			if (err) {
+				return this.$bvToast.toast(err.message, {
+					title: 'Error',
+					variant: 'danger',
+				});
+			}
+
+			this.$bvToast.toast('Image deleted!', {
+				title: 'Success',
+				variant: 'success',
+			});
+			this.getDirectoryContent();
 		},
 
 		setupAPI() {

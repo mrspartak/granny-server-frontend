@@ -38,7 +38,9 @@
 		<h3 class="mb-4">
 			Domain: {{ domain.domain }}
 
-			<b-button variant="outline-primary" :to="{ name: 'DomainView', id: domain.domain }">View info</b-button>
+			<b-button size="sm" variant="outline-primary" :to="{ name: 'DomainView', id: domain.domain }"
+				>View info</b-button
+			>
 		</h3>
 
 		<b-row>
@@ -49,35 +51,71 @@
 						><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right
 					></b-link>
 				</h5>
+				<p v-if="image">
+					<b>{{ image.format }}</b> {{ image.original.width }}x{{ image.original.height }},
+					{{ formatBytes(image.original.size) }}
+				</p>
 				<b-img fluid :src="'//' + originalSrc"></b-img>
 			</b-col>
 
 			<b-col xs="12" sm="12" lg="6">
 				<h5>
-					Modified image
+					Modified images
 				</h5>
-				<p>
-					<b>Long syntax:</b> {{ modifiedSrc }}
-					<b-link :href="'//' + modifiedSrc" target="_blank"
+
+				<b-table-simple class="mt-1" small responsive striped borderless caption-top v-if="image">
+					<caption>
+						Stored, modified images
+					</caption>
+					<b-thead>
+						<b-tr>
+							<b-th>Link</b-th>
+							<b-th class="text-right">Size</b-th>
+							<b-th class="text-right">Ttl</b-th>
+						</b-tr>
+					</b-thead>
+					<b-tbody>
+						<b-tr v-for="item in image.refChildren">
+							<b-td>
+								{{ modifiedSrc(item.modifications) }}
+								<b-link :href="'//' + modifiedSrc(item.modifications)" target="_blank"
+									><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right
+								></b-link>
+							</b-td>
+
+							<b-td class="text-right">
+								{{ formatBytes(item.size) }}
+							</b-td>
+
+							<b-td class="text-right">
+								{{ item.ttl }}
+							</b-td>
+						</b-tr>
+					</b-tbody>
+				</b-table-simple>
+
+				<p class="mt-4">
+					<b>Long syntax:</b> {{ modifiedSrc() }}
+					<b-link :href="'//' + modifiedSrc()" target="_blank"
 						><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right
 					></b-link>
 				</p>
 				<p>
-					<b>Short syntax:</b> {{ modifiedShortSrc }}
-					<b-link :href="'//' + modifiedShortSrc" target="_blank"
+					<b>Short syntax:</b> {{ modifiedShortSrc() }}
+					<b-link :href="'//' + modifiedShortSrc()" target="_blank"
 						><b-icon-box-arrow-up-right></b-icon-box-arrow-up-right
 					></b-link>
 				</p>
 				<b-row>
 					<b-col xl="4" lg="6" xs="12">
 						<b-form-group label="Width">
-							<b-form-input v-model="modifications.width" trim></b-form-input>
+							<b-form-input v-model="modifications.resize.width" trim></b-form-input>
 						</b-form-group>
 					</b-col>
 
 					<b-col xl="4" lg="6" xs="12">
 						<b-form-group label="Height">
-							<b-form-input v-model="modifications.height" trim></b-form-input>
+							<b-form-input v-model="modifications.resize.height" trim></b-form-input>
 						</b-form-group>
 					</b-col>
 
@@ -100,12 +138,18 @@
 					</b-col>
 
 					<b-col xs="12" xl="12">
-						<b-button type="submit" variant="primary" @click.prevent="modifiedSrcApplied = modifiedSrc"
+						<b-button type="submit" variant="primary" @click.prevent="modifiedSrcApplied = modifiedSrc()"
 							>Show modified image</b-button
 						>
 					</b-col>
 				</b-row>
-				<b-img class="mt-2" fluid v-if="modifiedSrcApplied" :src="'//' + modifiedSrcApplied"></b-img>
+				<b-img
+					class="mt-2"
+					fluid
+					v-if="modifiedSrcApplied"
+					:src="'//' + modifiedSrcApplied"
+					@load="getImage()"
+				></b-img>
 			</b-col>
 		</b-row>
 	</div>
@@ -118,6 +162,7 @@ export default {
 	name: 'DomainView',
 	data() {
 		return {
+			image: null,
 			formatTypes: [
 				{ value: null, text: 'Please select image format' },
 				{ value: 'jpeg', text: 'JPEG' },
@@ -125,8 +170,10 @@ export default {
 				{ value: 'webp', text: 'WEBP' },
 			],
 			modifications: {
-				width: null,
-				height: null,
+				resize: {
+					width: null,
+					height: null,
+				},
 				quality: null,
 				blur: null,
 				format: null,
@@ -136,6 +183,7 @@ export default {
 	},
 	beforeMount() {
 		this.setupAPI();
+		this.getImage();
 	},
 	computed: {
 		...mapState(['domains']),
@@ -155,47 +203,6 @@ export default {
 			let port = process.env.NODE_ENV == 'development' ? ':3001' : '';
 
 			return this.domain.domain + port + '/i/' + this.getPath();
-		},
-
-		modifiedSrc: function() {
-			let port = process.env.NODE_ENV == 'development' ? ':3001' : '';
-
-			let modPathArray = [];
-			Object.keys(this.modifications).forEach(key => {
-				if (this.modifications[key]) modPathArray.push(`${key}=${this.modifications[key]}`);
-			});
-			let modPath = modPathArray.length ? modPathArray.join(',') : '';
-
-			return this.domain.domain + port + '/i/' + (modPath ? modPath + '/_/' : '') + this.getPath();
-		},
-
-		modifiedShortSrc: function() {
-			let port = process.env.NODE_ENV == 'development' ? ':3001' : '';
-
-			let modPathArray = [];
-			if (this.modifications.width || this.modifications.height) {
-				if (this.modifications.width != this.modifications.height)
-					modPathArray.push(
-						`r=${this.modifications.width ? this.modifications.width : ''}x${
-							this.modifications.height ? this.modifications.height : ''
-						}`,
-					);
-				else modPathArray.push(`r=${this.modifications.width}`);
-			}
-			Object.keys(this.modifications).forEach(key => {
-				if (this.modifications[key]) {
-					let altKey = key;
-					if (key == 'width') return;
-					if (key == 'height') return;
-					if (key == 'format') altKey = 'f';
-					if (key == 'quality') altKey = 'q';
-
-					modPathArray.push(`${altKey}=${this.modifications[key]}`);
-				}
-			});
-			let modPath = modPathArray.length ? modPathArray.join(',') : '';
-
-			return this.domain.domain + port + '/i/' + (modPath ? modPath + '/_/' : '') + this.getPath();
 		},
 
 		pathSplited: function() {
@@ -218,6 +225,11 @@ export default {
 		},
 	},
 	methods: {
+		async getImage() {
+			var [err, image] = await this.$granny.getImage({ path: this.getPath() });
+			this.image = image;
+		},
+
 		setupAPI() {
 			this.$granny.setOptions({
 				accessKey: this.domain.accessKey,
@@ -238,6 +250,71 @@ export default {
 			if (char === ']') char = '\\]';
 			if (char === '\\') char = '\\\\';
 			return string.replace(new RegExp('^[' + char + ']+|[' + char + ']+$', 'g'), '');
+		},
+
+		modifiedSrc: function(modifications = false) {
+			let port = process.env.NODE_ENV == 'development' ? ':3001' : '';
+			if (!modifications) modifications = Object.assign({}, this.modifications);
+			if (modifications.resize) {
+				if (modifications.resize.width) modifications.width = modifications.resize.width;
+				if (modifications.resize.height) modifications.height = modifications.resize.height;
+				delete modifications.resize;
+			}
+
+			let modPathArray = [];
+			Object.keys(modifications).forEach(key => {
+				if (modifications[key]) modPathArray.push(`${key}=${modifications[key]}`);
+			});
+			let modPath = modPathArray.length ? modPathArray.join(',') : '';
+
+			return this.domain.domain + port + '/i/' + (modPath ? modPath + '/_/' : '') + this.getPath();
+		},
+
+		modifiedShortSrc: function(modifications = false) {
+			let port = process.env.NODE_ENV == 'development' ? ':3001' : '';
+			if (!modifications) modifications = Object.assign({}, this.modifications);
+			if (modifications.resize) {
+				if (modifications.resize.width) modifications.width = modifications.resize.width;
+				if (modifications.resize.height) modifications.height = modifications.resize.height;
+				delete modifications.resize;
+			}
+
+			let modPathArray = [];
+			if (modifications.width || modifications.height) {
+				if (modifications.width != modifications.height)
+					modPathArray.push(
+						`r=${modifications.width ? modifications.width : ''}x${
+							modifications.height ? modifications.height : ''
+						}`,
+					);
+				else modPathArray.push(`r=${modifications.width}`);
+			}
+			Object.keys(modifications).forEach(key => {
+				if (modifications[key]) {
+					let altKey = key;
+					if (key == 'width') return;
+					if (key == 'height') return;
+					if (key == 'format') altKey = 'f';
+					if (key == 'quality') altKey = 'q';
+
+					modPathArray.push(`${altKey}=${modifications[key]}`);
+				}
+			});
+			let modPath = modPathArray.length ? modPathArray.join(',') : '';
+
+			return this.domain.domain + port + '/i/' + (modPath ? modPath + '/_/' : '') + this.getPath();
+		},
+
+		formatBytes(bytes, decimals = 2) {
+			if (bytes === 0) return '0 Bytes';
+
+			const k = 1024;
+			const dm = decimals < 0 ? 0 : decimals;
+			const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+			const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+			return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 		},
 	},
 };

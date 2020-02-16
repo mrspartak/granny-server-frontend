@@ -17,7 +17,7 @@
 		<h3>
 			Domain: {{ domain.domain }}
 
-			<b-button variant="outline-primary" :to="{ name: 'DomainContent', id: domain.domain }"
+			<b-button size="sm" variant="outline-primary" :to="{ name: 'DomainContent', id: domain.domain }"
 				>View content</b-button
 			>
 		</h3>
