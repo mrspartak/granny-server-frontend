@@ -42,7 +42,7 @@
 				<b-col>
 					<label>Select path for file</label>
 					<b-input-group>
-						<b-input v-model="form.path"></b-input>
+						<b-input v-model="form.path" :disabled="!form.file"></b-input>
 					</b-input-group>
 				</b-col>
 
@@ -60,7 +60,16 @@
 			</b-row>
 		</b-form>
 
-		<b-table class="mt-4" :striped="true" :borderless="true" :fields="fields" :busy="isBusy" :items="items">
+		<b-table
+			class="mt-4"
+			:striped="true"
+			:borderless="true"
+			:fields="fields"
+			:busy="isBusy"
+			:items="items"
+			show-empty
+			empty-text="No content uploaded yet"
+		>
 			<template v-slot:table-busy>
 				<div class="text-center text-danger my-2">
 					<b-spinner class="align-middle"></b-spinner>
@@ -93,6 +102,18 @@
 				</div>
 			</template>
 
+			<template v-slot:cell(size_original)="data">
+				{{ formatBytes(data.item.size.original) }}
+			</template>
+
+			<template v-slot:cell(size_total)="data">
+				{{
+					formatBytes(
+						Object.values(data.item.size).reduce((accumulator, currentValue) => accumulator + currentValue),
+					)
+				}}
+			</template>
+
 			<template v-slot:cell(files_inside)="data">
 				{{ data.item.items }}
 			</template>
@@ -114,7 +135,7 @@ export default {
 			},
 			items: [],
 			isBusy: true,
-			fields: ['name', 'files_inside'],
+			fields: ['name', 'size_original', 'size_total', 'files_inside'],
 		};
 	},
 	beforeMount() {
@@ -122,19 +143,22 @@ export default {
 	},
 	mounted() {
 		this.getDirectoryContent();
-		this.form.path = '/' + (this.getPath() ? this.getPath() + '/' : '') + 'space.jpg';
+		this.setFormPath();
 	},
 	watch: {
 		'$route.query.path'() {
 			console.log('watch.query.path');
 			this.getDirectoryContent();
-			this.form.path = '/' + (this.getPath() ? this.getPath() + '/' : '') + 'space.jpg';
+			this.setFormPath();
 		},
 		'$route.params.id'() {
 			console.log('watch.params.id');
 			this.setupAPI();
 			this.getDirectoryContent();
-			this.form.path = '/' + (this.getPath() ? this.getPath() + '/' : '') + 'space.jpg';
+			this.setFormPath();
+		},
+		'form.file'() {
+			this.setFormPath();
 		},
 	},
 	computed: {
@@ -240,6 +264,23 @@ export default {
 			if (char === ']') char = '\\]';
 			if (char === '\\') char = '\\\\';
 			return string.replace(new RegExp('^[' + char + ']+|[' + char + ']+$', 'g'), '');
+		},
+
+		setFormPath() {
+			this.form.path =
+				'/' + (this.getPath() ? this.getPath() + '/' : '') + (this.form.file ? this.form.file.name : '');
+		},
+
+		formatBytes(bytes, decimals = 2) {
+			if (bytes === 0) return '0 Bytes';
+
+			const k = 1024;
+			const dm = decimals < 0 ? 0 : decimals;
+			const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+			const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+			return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 		},
 	},
 };

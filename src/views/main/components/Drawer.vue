@@ -16,30 +16,30 @@
 
 		<ul class="list-unstyled components">
 			<li>
-				<b-link :to="{ name: 'DomainAdd' }">
-					<b-icon-plus></b-icon-plus>
-					Add domain
+				<b-link :to="{ name: 'DomainList' }">
+					<b-icon-list></b-icon-list>
+					Domains
 				</b-link>
 			</li>
 			<li>
-				<b-link :to="{ name: 'DomainList' }">
-					<b-icon-list></b-icon-list>
-					List domains
+				<b-link :to="{ name: 'DomainAdd' }">
+					<b-icon-plus></b-icon-plus>
+					Add
 				</b-link>
 			</li>
 		</ul>
 
 		<ul class="list-unstyled components" v-if="users.length">
 			<li>
-				<b-link :to="{ name: 'UserAdd' }">
-					<b-icon-plus></b-icon-plus>
-					Add user
+				<b-link :to="{ name: 'UserList' }">
+					<b-icon-list></b-icon-list>
+					Users
 				</b-link>
 			</li>
 			<li>
-				<b-link :to="{ name: 'UserList' }">
-					<b-icon-list></b-icon-list>
-					List users
+				<b-link :to="{ name: 'UserAdd' }">
+					<b-icon-plus></b-icon-plus>
+					Add
 				</b-link>
 			</li>
 		</ul>

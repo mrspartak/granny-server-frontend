@@ -21,14 +21,28 @@
 			</template>
 
 			<template v-slot:cell(actions)="data">
-				<b-link
+				<b-button
+					class="mr-2"
+					size="sm"
+					variant="outline-dark"
 					:to="{
 						name: 'DomainView',
 						params: { id: data.item.domain },
 					}"
 				>
 					View
-				</b-link>
+				</b-button>
+
+				<b-button
+					size="sm"
+					variant="outline-dark"
+					:to="{
+						name: 'DomainContent',
+						params: { id: data.item.domain },
+					}"
+				>
+					Content
+				</b-button>
 			</template>
 		</b-table>
 	</div>
