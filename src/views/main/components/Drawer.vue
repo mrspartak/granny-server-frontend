@@ -22,14 +22,14 @@
 				</b-link>
 			</li>
 			<li>
-				<b-link :to="{ name: 'DomainAdd' }">
+				<b-link :to="{ name: 'DomainAdd' }" v-if="me.settings.canAddDomains">
 					<b-icon-plus></b-icon-plus>
 					Add
 				</b-link>
 			</li>
 		</ul>
 
-		<ul class="list-unstyled components" v-if="users.length">
+		<ul class="list-unstyled components" v-if="me.role == 'admin' && users.length">
 			<li>
 				<b-link :to="{ name: 'UserList' }">
 					<b-icon-list></b-icon-list>
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
 	name: 'MainDrawer',
@@ -61,6 +61,7 @@ export default {
 	computed: {
 		...mapState(['domains']),
 		...mapState(['users']),
+		...mapState(['me']),
 	},
 	methods: {
 		...mapMutations(['SET_APP_ACCESS_TOKEN']),

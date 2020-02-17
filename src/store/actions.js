@@ -15,4 +15,11 @@ export default {
 			if (users) commit('SET_USERS', users);
 		});
 	},
+	async GET_ME({ commit, state }) {
+		await granny.getMe().then(([err, me]) => {
+			if (err) return;
+
+			if (me) commit('SET_ME', me);
+		});
+	},
 };

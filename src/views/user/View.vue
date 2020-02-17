@@ -29,6 +29,20 @@
 				</b-form-group>
 			</b-col>
 
+			<b-col xl="3" lg="4" sm="6" xs="12">
+				<b-form-group label="Allow user to add domains">
+					<b-form-checkbox
+						id="checkbox-1"
+						v-model="form.canAddDomains"
+						name="checkbox-1"
+						:value="true"
+						:unchecked-value="false"
+					>
+						Allow
+					</b-form-checkbox>
+				</b-form-group>
+			</b-col>
+
 			<b-col xs="12" xl="12">
 				<b-form-group label="Domains []">
 					<b-form-select v-model="form.domains" :multiple="true" :select-size="10">
@@ -62,6 +76,7 @@ export default {
 			form: {
 				password: null,
 				role: null,
+				canAddDomains: null,
 				domains: [],
 			},
 			_form: {},
@@ -111,6 +126,7 @@ export default {
 			this.form = Object.assign(this._form, {
 				role: this.user.role,
 				domains: this.user.domains,
+				canAddDomains: this.user.settings.canAddDomains,
 			});
 		},
 	},

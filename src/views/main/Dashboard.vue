@@ -8,7 +8,7 @@
 				</b-card-text>
 			</b-card>
 
-			<b-card bg-variant="light" header="Users" class="text-center">
+			<b-card bg-variant="light" header="Users" class="text-center" v-if="me.role == 'admin'">
 				<b-card-text>
 					<b-link :to="{ name: 'DomainList' }"> Users added {{ users.length }} </b-link>
 				</b-card-text>
@@ -26,6 +26,7 @@ export default {
 	computed: {
 		...mapState(['domains']),
 		...mapState(['users']),
+		...mapState(['me']),
 	},
 };
 </script>

@@ -68,6 +68,18 @@
 				</b-form-group>
 			</b-col>
 
+			<b-col xl="3" lg="4" sm="6" xs="12">
+				<b-form-group label="Max size in bytes of domain bucket. 0 = unlimited">
+					<b-form-input
+						v-model="form.maxSize"
+						type="number"
+						min="0"
+						number
+						:disabled="me.role != 'admin'"
+					></b-form-input>
+				</b-form-group>
+			</b-col>
+
 			<b-col xs="12" xl="12" v-if="users.length">
 				<b-form-group label="Users []">
 					<b-form-select v-model="form.users" :multiple="true" :select-size="10">
@@ -97,6 +109,7 @@ export default {
 				users: [],
 				referer: [],
 				ttl: null,
+				maxSize: null,
 			},
 			_form: {},
 		};
@@ -116,6 +129,7 @@ export default {
 	computed: {
 		...mapState(['domains']),
 		...mapState(['users']),
+		...mapState(['me']),
 
 		domain: function() {
 			return this.domains.find(domain => domain.domain == this.$route.params.id);
@@ -168,6 +182,7 @@ export default {
 				users: this.domain.users,
 				referer: this.domain.settings.referer,
 				ttl: this.domain.settings.ttl,
+				maxSize: this.domain.adminSettings.maxSize,
 			});
 		},
 	},

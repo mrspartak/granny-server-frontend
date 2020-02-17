@@ -77,6 +77,7 @@ export default {
 				if (err) return alert('Error: ' + err.message);
 
 				this.$store.commit('SET_APP_ACCESS_TOKEN', response.accessToken);
+				this.$store.dispatch('GET_ME');
 				this.$router.push('/');
 			});
 		},
