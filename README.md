@@ -9,11 +9,12 @@ This app helps to setup your mini CDN. Add domains, setup settings and view your
 [![Latest Github tag](https://img.shields.io/github/v/tag/mrspartak/granny-server-frontend?sort=date&style=for-the-badge "Latest Github tag")](https://github.com/mrspartak/granny-server-frontend/releases "Latest Github tag")
 
 ## Ecosystem
-![image](https://user-images.githubusercontent.com/993910/74383777-e8261d80-4e00-11ea-8373-25070ec1ca97.png)
+![image](https://user-images.githubusercontent.com/993910/74651014-fcb53d80-5193-11ea-997a-b1f394201922.PNG)
 
 [granny-server-backend](https://github.com/mrspartak/granny-server-backend "granny-server-backend") - Backend service with API exposed to upload and serve/manipulate images  
 [granny-js-client](https://github.com/mrspartak/granny-js-client "granny-js-client") - Client library that works both in nodejs and browser. Makes API calls easier  
 [granny-server-frontend](https://github.com/mrspartak/granny-server-frontend "granny-server-frontend") - Frontend APP that uses client to manage your CDN domains and settings  
+[granny-server-cron](https://github.com/mrspartak/granny-server-cron "granny-server-cron") - Utility app  
 
 ## Requirements
 - [Granny backend server running](https://github.com/mrspartak/granny-server-backend)
