@@ -22,7 +22,7 @@
 				</b-link>
 			</li>
 			<li>
-				<b-link :to="{ name: 'DomainAdd' }" v-if="me.settings.canAddDomains">
+				<b-link :to="{ name: 'DomainAdd' }" v-if="me.role == 'admin' || me.settings.canAddDomains">
 					<b-icon-plus></b-icon-plus>
 					Add
 				</b-link>
