@@ -4,7 +4,8 @@
 		<b-card-group deck>
 			<b-card bg-variant="light" header="Domains" class="text-center">
 				<b-card-text>
-					<b-link :to="{ name: 'DomainList' }"> Domains added {{ domains.length }} </b-link>
+					<b-link :to="{ name: 'DomainList' }"> Domains added {{ domains.length }} </b-link><br />
+					<b>Tolal size: {{ totalDomainSize }}</b>
 				</b-card-text>
 			</b-card>
 
@@ -27,6 +28,14 @@ export default {
 		...mapState(['domains']),
 		...mapState(['users']),
 		...mapState(['me']),
+
+		totalDomainSize() {
+			return this.formatBytes(
+				this.domains.reduce((acc, data) => {
+					return acc + data.size;
+				}, 0),
+			);
+		},
 	},
 };
 </script>

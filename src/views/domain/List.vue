@@ -20,6 +20,20 @@
 				{{ data.item.users.length }}
 			</template>
 
+			<template v-slot:cell(size)="data">
+				<div
+					:class="{
+						'text-danger':
+							data.item.adminSettings.maxSize > 0 && data.item.size > data.item.adminSettings.maxSize,
+					}"
+				>
+					{{ formatBytes(data.item.size) }}
+					<span v-if="data.item.adminSettings.maxSize > 0">
+						/ {{ formatBytes(data.item.adminSettings.maxSize) }}</span
+					>
+				</div>
+			</template>
+
 			<template v-slot:cell(actions)="data">
 				<b-button
 					class="mr-2"
@@ -55,7 +69,7 @@ export default {
 	name: 'UserView',
 	data() {
 		return {
-			fields: ['domain', 'users', 'actions'],
+			fields: ['domain', 'users', 'size', 'actions'],
 		};
 	},
 	async mounted() {

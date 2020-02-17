@@ -1,10 +1,12 @@
 import Vue from 'vue';
-import App from './App.vue';
 import router from './router/';
 import store from './store/';
 
 import './plugins/bootstrap';
+import './plugins/helpers';
 import granny from './plugins/granny';
+
+import App from './App.vue';
 
 granny.setAccessToken(store.state.ACCESS_TOKEN);
 
