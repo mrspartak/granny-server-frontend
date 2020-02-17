@@ -11,7 +11,7 @@
 
 			<b-card bg-variant="light" header="Users" class="text-center" v-if="me.role == 'admin'">
 				<b-card-text>
-					<b-link :to="{ name: 'DomainList' }"> Users added {{ users.length }} </b-link>
+					<b-link :to="{ name: 'UsersList' }"> Users added {{ users.length }} </b-link>
 				</b-card-text>
 			</b-card>
 		</b-card-group>
