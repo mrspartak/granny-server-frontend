@@ -48,6 +48,22 @@
 			</b-col>
 		</b-row>
 
+		<h4 class="mt-5">S3</h4>
+		<b-row>
+			<b-col>
+				<label>Bucket</label>
+				<b-input readonly class="mb-2 mr-sm-3 mb-sm-0" :value="domain.s3.bucket"></b-input>
+			</b-col>
+			<b-col>
+				<label>Endpoint</label>
+				<b-input readonly class="mb-2 mr-sm-3 mb-sm-0" :value="domain.s3.endPoint"></b-input>
+			</b-col>
+			<b-col>
+				<label>Use SSL</label>
+				<b-input readonly class="mb-2 mr-sm-3 mb-sm-0" :value="domain.s3.useSSL"></b-input>
+			</b-col>
+		</b-row>
+
 		<h4 class="mt-5">Settings</h4>
 		<b-row>
 			<b-col lg="4" sm="6" xs="12">

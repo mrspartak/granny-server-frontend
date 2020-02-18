@@ -48,6 +48,7 @@
 				</b-button>
 
 				<b-button
+					class="mr-2"
 					size="sm"
 					variant="outline-dark"
 					:to="{
@@ -56,6 +57,10 @@
 					}"
 				>
 					Content
+				</b-button>
+
+				<b-button size="sm" variant="outline-danger" @click="deleteDomain(data.item.domain)">
+					Delete
 				</b-button>
 			</template>
 		</b-table>
@@ -80,6 +85,26 @@ export default {
 	},
 	methods: {
 		...mapActions(['GET_DOMAIN_LIST']),
+
+		async deleteDomain(domain) {
+			let confirmed = prompt('Please type domain name if you agree to delete domain and all its data');
+			if (!confirmed) return;
+			if (confirmed.trim().toLocaleLowerCase() !== domain) return;
+
+			var [err, deleted] = await this.$granny.deleteDomain({ domain });
+			if (err) {
+				return this.$bvToast.toast(err.message, {
+					title: 'Error',
+					variant: 'danger',
+				});
+			}
+
+			this.$bvToast.toast('Domain will be soon deleted', {
+				title: 'Success',
+				variant: 'success',
+			});
+			await this.GET_DOMAIN_LIST();
+		},
 	},
 };
 </script>
