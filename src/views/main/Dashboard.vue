@@ -2,16 +2,22 @@
 	<div>
 		<h3>Dashboard</h3>
 		<b-card-group deck>
-			<b-card bg-variant="light" header="Domains" class="text-center">
+			<b-card bg-variant="light" header="Domains" class="text-center" style="max-width: 20rem;">
 				<b-card-text>
-					<b-link :to="{ name: 'DomainList' }"> Domains added {{ domains.length }} </b-link><br />
+					<b-link :to="{ name: 'DomainList' }"> Domains - {{ domains.length }} </b-link><br />
 					<b>Tolal size: {{ totalDomainSize }}</b>
 				</b-card-text>
 			</b-card>
 
-			<b-card bg-variant="light" header="Users" class="text-center" v-if="me.role == 'admin'">
+			<b-card
+				bg-variant="light"
+				header="Users"
+				class="text-center"
+				v-if="me.role == 'admin'"
+				style="max-width: 20rem;"
+			>
 				<b-card-text>
-					<b-link :to="{ name: 'UsersList' }"> Users added {{ users.length }} </b-link>
+					<b-link :to="{ name: 'UsersList' }"> Users - {{ users.length }} </b-link>
 				</b-card-text>
 			</b-card>
 		</b-card-group>

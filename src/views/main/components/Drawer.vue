@@ -6,7 +6,7 @@
 		</div>
 
 		<ul class="list-unstyled components">
-			<li class="active">
+			<li :class="{ active: $route.name == 'Dashboard' }">
 				<b-link :to="{ name: 'Dashboard' }">
 					<b-icon-window></b-icon-window>
 					Dashboard
@@ -15,13 +15,13 @@
 		</ul>
 
 		<ul class="list-unstyled components">
-			<li>
+			<li :class="{ active: $route.name == 'DomainList' }">
 				<b-link :to="{ name: 'DomainList' }">
 					<b-icon-list></b-icon-list>
 					Domains
 				</b-link>
 			</li>
-			<li>
+			<li :class="{ active: $route.name == 'DomainAdd' }">
 				<b-link :to="{ name: 'DomainAdd' }" v-if="me.role == 'admin' || me.settings.canAddDomains">
 					<b-icon-plus></b-icon-plus>
 					Add
@@ -30,13 +30,13 @@
 		</ul>
 
 		<ul class="list-unstyled components" v-if="me.role == 'admin' && users.length">
-			<li>
+			<li :class="{ active: $route.name == 'UserList' }">
 				<b-link :to="{ name: 'UserList' }">
 					<b-icon-list></b-icon-list>
 					Users
 				</b-link>
 			</li>
-			<li>
+			<li :class="{ active: $route.name == 'UserAdd' }">
 				<b-link :to="{ name: 'UserAdd' }">
 					<b-icon-plus></b-icon-plus>
 					Add
