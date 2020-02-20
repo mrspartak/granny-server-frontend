@@ -159,19 +159,12 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
 	if (to.meta.requiresAuth) console.log('requiresAuth', to.fullPath, 'loggedIn: ' + store.state.ACCESS_TOKEN);
-	if (to.meta.requiresInititate)
-		console.log('requiresInititate', to.fullPath, 'appInitiated: ' + store.state.APP_INITIATED);
 	if (to.meta.requiresNotAuth) console.log('requiresNotAuth', to.fullPath, 'loggedIn: ' + store.state.ACCESS_TOKEN);
-	if (to.meta.requiresNotInititate)
-		console.log('requiresNotInititate', to.fullPath, 'appInitiated: ' + store.state.APP_INITIATED);
-
 	if (to.meta.requiresAuth && store.state.ACCESS_TOKEN == false) router.push('/util/login');
 	if (to.meta.requiresInititate && store.state.APP_INITIATED == false) next({ path: '/util/setup' });
-
 	if (to.meta.requiresNotInititate && store.state.APP_INITIATED == true) router.push('/util/login');
 	if (to.meta.requiresNotAuth && store.state.ACCESS_TOKEN != false) next({ path: '/' });
 
-	console.log('nothing');
 	next();
 });
 

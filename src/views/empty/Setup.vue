@@ -1,42 +1,44 @@
 <template>
-	<div>
-		<b-jumbotron header="IDN-JS" lead="Image Delivery Network">
-			<p>Upload, Download, Manipulate made easy</p>
+	<b-row>
+		<b-col sm="12" md="8" offset-md="2" lg="6" offset-lg="3" xl="4" offset-xl="4">
+			<b-jumbotron header="IDN-JS" lead="Image Delivery Network">
+				<p>Upload, Download, Manipulate made easy</p>
 
-			<b-form>
-				<b-form-group id="example-input-group-1" label="Login" label-for="example-input-1">
-					<b-form-input
-						id="example-input-1"
-						name="example-input-1"
-						v-model="$v.form.login.$model"
-						:state="validateState('login')"
-						aria-describedby="input-1-live-feedback"
-					></b-form-input>
+				<b-form>
+					<b-form-group id="example-input-group-1" label="Login" label-for="example-input-1">
+						<b-form-input
+							id="example-input-1"
+							name="example-input-1"
+							v-model="$v.form.login.$model"
+							:state="validateState('login')"
+							aria-describedby="input-1-live-feedback"
+						></b-form-input>
 
-					<b-form-invalid-feedback id="input-1-live-feedback"
-						>This is a required field and must be at least 6 characters.</b-form-invalid-feedback
-					>
-				</b-form-group>
+						<b-form-invalid-feedback id="input-1-live-feedback"
+							>This is a required field and must be at least 6 characters.</b-form-invalid-feedback
+						>
+					</b-form-group>
 
-				<b-form-group id="example-input-group-2" label="Password" label-for="example-input-2">
-					<b-form-input
-						id="example-input-2"
-						name="example-input-2"
-						v-model="$v.form.password.$model"
-						:state="validateState('password')"
-						aria-describedby="input-1-live-feedback"
-						type="password"
-					></b-form-input>
+					<b-form-group id="example-input-group-2" label="Password" label-for="example-input-2">
+						<b-form-input
+							id="example-input-2"
+							name="example-input-2"
+							v-model="$v.form.password.$model"
+							:state="validateState('password')"
+							aria-describedby="input-1-live-feedback"
+							type="password"
+						></b-form-input>
 
-					<b-form-invalid-feedback id="input-2-live-feedback"
-						>This is a required field and must be at least 6 characters.</b-form-invalid-feedback
-					>
-				</b-form-group>
+						<b-form-invalid-feedback id="input-2-live-feedback"
+							>This is a required field and must be at least 6 characters.</b-form-invalid-feedback
+						>
+					</b-form-group>
 
-				<b-button variant="primary" @click="setup()">Setup</b-button>
-			</b-form>
-		</b-jumbotron>
-	</div>
+					<b-button variant="primary" @click="setup()">Setup</b-button>
+				</b-form>
+			</b-jumbotron>
+		</b-col>
+	</b-row>
 </template>
 
 <script>
