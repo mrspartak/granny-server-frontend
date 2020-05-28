@@ -15,7 +15,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bootstrap-vue": "^2.2.2",
-    "core-js": "^3.4.4",
+    "core-js": "^3.6.5",
     "element-ui": "^2.13.0",
     "granny": "^0.2.8",
     "random-words": "^1.1.0",
