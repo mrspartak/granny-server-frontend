@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "bootstrap-vue": "^2.2.2",
+    "bootstrap-vue": "^2.15.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.0",
-    "granny": "^0.2.8",
+    "granny": "^0.2.9",
     "random-words": "^1.1.0",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.5",
@@ -28,12 +28,12 @@
     "vuex-persistedstate": "^3.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.1.0",
+    "@vue/cli-plugin-babel": "^4.4.1",
     "@vue/cli-plugin-router": "^4.4.1",
     "@vue/cli-plugin-vuex": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
     "husky": "^4.2.5",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.14.1",
     "pretty-quick": "^2.0.1",
     "sass": "^1.17.4",
     "sass-loader": "^8.0.0",
