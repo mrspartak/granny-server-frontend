@@ -16,7 +16,7 @@
     "axios": "^0.19.2",
     "bootstrap-vue": "^2.15.0",
     "core-js": "^3.6.5",
-    "element-ui": "^2.13.0",
+    "element-ui": "^2.13.2",
     "granny": "^0.2.9",
     "random-words": "^1.1.0",
     "vue": "^2.6.10",
